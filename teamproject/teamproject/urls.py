@@ -16,14 +16,24 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include 
 from geektext import views
+from geektext.views import book_comments
  
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('books/', include('books.urls')),
+    #path('books/', include('books.urls')),
     path('books/', views.create_book),
     path('books/<str:isbn>/', views.retrieve_book),
     path('authors/', views.create_author),
     path('authors/<int:author_id>/books/', views.list_books_by_author),
     
+    #priscilla's urls
+    path('book/<int:pk>/', views.book_individual.as_view()),
+    path('books/<int:book_id>/comments/', book_comments, name='book_comments'),
+    path('comments/', views.comment_list.as_view()),
+    path('comment/<int:pk>/', views.comment_individual.as_view()),
+    path('ratings/', views.rating_list.as_view()),
+    path('rating/<int:pk>/', views.rating_individual.as_view()),
+    #path('books/<int:book_id>/avg_rating/', book_average_rating, name='book_average_rating')
+    #path('books/<int:book_id>/avg_rating/', views.book_rating_average, name='book_average_rating')
 ]

@@ -1,4 +1,7 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.core.validators import MaxValueValidator, MinValueValidator
+
 
 class Author(models.Model):
     first_name = models.CharField(max_length=50)
@@ -19,6 +22,22 @@ class Book(models.Model):
     publisher = models.CharField(max_length=50)
     year_published = models.IntegerField()
     copies_sold = models.IntegerField()
+    ratings = models.ForeignKey('Rating', on_delete=models.CASCADE, related_name='books', blank=True, null=True)
 
     def __str__(self):
         return self.name
+    
+class Comments(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+def __str__(self):
+        return f"Comment on {self.book}: {self.text}"
+
+class Rating(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ratings')
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    rating = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(5.0)])
+    created_at = models.DateTimeField(auto_now_add=True)
