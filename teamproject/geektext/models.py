@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
 
+from teamproject.geektext.admin import RatingAdmin
+
 
 class Author(models.Model):
     first_name = models.CharField(max_length=50)
@@ -22,7 +24,7 @@ class Book(models.Model):
     publisher = models.CharField(max_length=50)
     year_published = models.IntegerField()
     copies_sold = models.IntegerField()
-    ratings = models.ForeignKey('Rating', on_delete=models.CASCADE, related_name='books', blank=True, null=True)
+    ratings = models.ManyToManyField(RatingAdmin, related_name='books', blank=True)
 
     def __str__(self):
         return self.name
@@ -33,7 +35,7 @@ class Comments(models.Model):
     comment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
-def __str__(self):
+    def __str__(self):
         return f"Comment on {self.book}: {self.text}"
 
 class Rating(models.Model):
@@ -41,3 +43,4 @@ class Rating(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     rating = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(5.0)])
     created_at = models.DateTimeField(auto_now_add=True)
+
