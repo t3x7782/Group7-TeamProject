@@ -14,20 +14,20 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include 
+from django.urls import path
 from geektext import views
- 
+from geektext.views import book_comments
+
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('books/', include('books.urls')),
+    #path('books/', include('books.urls')),
     path('books/', views.create_book),
     path('books/<str:isbn>/', views.retrieve_book),
     path('authors/', views.create_author),
     path('authors/<int:author_id>/books/', views.list_books_by_author),
     
-<<<<<<< Updated upstream
-=======
     #priscilla's urls
     path('book/<int:pk>/', views.book_individual.as_view()),
     path('books/<int:book_id>/comments/', book_comments, name='book_comments'),
@@ -38,16 +38,13 @@ urlpatterns = [
     #path('books/<int:book_id>/avg_rating/', book_average_rating, name='book_average_rating')
     #path('books/<int:book_id>/avg_rating/', views.book_rating_average, name='book_average_rating')
 
-    # Cairo
     path('admin/', admin.site.urls),
     path('users/', views.UserList.as_view()),
     path('users/<int:pk>/', views.UserIndividual.as_view()),
-    path('users/<int:user_id>/cart/', views.UserShoppingCartList.as_view()),
-    path('users/<int:user_id>/atc/<int:book_id>/', views.UserAddBookToCart.as_view()),
-    path('users/<int:user_id>/remove/<int:book_id>/', views.UserRemoveBookFromCart.as_view()),
-    path('users/<int:user_id>/cart/total/', views.UserShoppingCartTotal.as_view()),
-    path('books/', views.BookList.as_view()),
-    path('books/<int:pk>/', views.BookIndividual.as_view()),
-    # Cairo
->>>>>>> Stashed changes
+    path('creditcard/', views.CreditCardList.as_view()),
+    path('creditcard/<int:pk>/', views.CreditCardIndividual.as_view()),
+    path('users/create/', views.CreateUserView.as_view(), name='create_user'),
+    path('users/<username>/', views.GetUserView.as_view()),
+    path('api/users/<str:username>/', views.UserUpdate.as_view()),
+    path('api/users/create_credit_card', views.CreditCardCreate.as_view()),
 ]
