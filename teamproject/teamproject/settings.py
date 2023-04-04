@@ -53,6 +53,13 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'teamproject.urls'
 
+# Cairo
+# adds a slash at the end of URLs when not included to avoid dumb request errors
+APPEND_SLASH = True
+# Sets authentication model as Users model from shopping cart app
+AUTH_USER_MODEL = 'geektext.Users'
+# Cairo
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
