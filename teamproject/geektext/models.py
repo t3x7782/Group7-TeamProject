@@ -1,12 +1,9 @@
 from django.db import models
-<<<<<<< Updated upstream
-=======
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
-# Cairo
 from django.contrib.auth.models import AbstractUser
 
->>>>>>> Stashed changes
+
 
 class Author(models.Model):
     first_name = models.CharField(max_length=50)
@@ -27,11 +24,9 @@ class Book(models.Model):
     publisher = models.CharField(max_length=50)
     year_published = models.IntegerField()
     copies_sold = models.IntegerField()
+    ratings = models.ForeignKey('Rating', on_delete=models.CASCADE, related_name='books', blank=True, null=True)
 
     def __str__(self):
-<<<<<<< Updated upstream
-        return self.name
-=======
         return self.name
     
 class Comments(models.Model):
@@ -50,27 +45,29 @@ class Rating(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 
-# Cairo
-'''
-Model for User information in database. Uses AbstractUser module to handle the common user info like name, password,
-email. Adds field for name and home address. 
-'''
-class Users(AbstractUser):
-    Name = models.CharField(max_length=500, null=True, blank=True)
-    HomeAddress = models.TextField(max_length=500, null=True, blank=True)
-    Cart = models.ManyToManyField(Book, blank=True, default=list)
+class User(AbstractUser):
+    name = models.CharField(max_length=255, null=True, blank=True)
+    email = models.EmailField(null=True, blank=True)
+    home_address = models.CharField(max_length=255, null=True, blank=True)
+    groups = models.ManyToManyField('auth.Group', related_name='auth_user_groups', blank=True)
+    user_permissions = models.ManyToManyField('auth.Permission', related_name='auth_user_permissions', blank=True)
 
-    def GetCart(self):
-        return self.Cart.all()
+    def __str__(self):
+        return self.username
 
-    def TotalPrice(self):
-        total = 0
+    class Meta:
+        app_label = 'geektext'
 
-        if self.Cart.__sizeof__() == 0:
-            return total
-        else:
-            for book in self.Cart.all():
-                total += book.BookPrice
 
-            return total
->>>>>>> Stashed changes
+class CreditCard(models.Model):
+    name = models.CharField(max_length=255, null=True, blank=True)
+    card_number = models.CharField(max_length=16)
+    card_type = models.CharField(max_length=255)
+    expiration_date = models.DateField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='credit_cards', null=True, blank=True)
+
+    class Meta:
+        app_label = 'geektext'
+
+    def __str__(self):
+        return self.card_number
