@@ -15,7 +15,7 @@ class AuthorSerializer(serializers.ModelSerializer):
 class RatingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Rating
-        fields = ('user', 'book', 'rating') #'created_at'
+        fields = ('user', 'book', 'rating', 'created_at')
 
 class BookSerializer(serializers.ModelSerializer):
     author = AuthorSerializer(read_only=True)
