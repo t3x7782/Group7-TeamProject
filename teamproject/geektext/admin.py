@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Book, Author
+from .models import Book, Author, Users
 # Register your models here.
 
 admin.site.register(Book)
@@ -12,8 +12,7 @@ admin.site.register(Rating)
 
 # Cairo
 # Registers the models from the database to allow them to be viewed in the admin panel
-admin.site.register(models.Users)
-admin.site.register(models.Books)
+admin.site.register(Users)
 # Cairo
 
 class BookAdmin(admin.ModelAdmin):
