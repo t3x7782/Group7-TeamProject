@@ -26,4 +26,28 @@ urlpatterns = [
     path('authors/', views.create_author),
     path('authors/<int:author_id>/books/', views.list_books_by_author),
     
+<<<<<<< Updated upstream
+=======
+    #priscilla's urls
+    path('book/<int:pk>/', views.book_individual.as_view()),
+    path('books/<int:book_id>/comments/', book_comments, name='book_comments'),
+    path('comments/', views.comment_list.as_view()),
+    path('comment/<int:pk>/', views.comment_individual.as_view()),
+    path('ratings/', views.rating_list.as_view()),
+    path('rating/<int:pk>/', views.rating_individual.as_view()),
+    #path('books/<int:book_id>/avg_rating/', book_average_rating, name='book_average_rating')
+    #path('books/<int:book_id>/avg_rating/', views.book_rating_average, name='book_average_rating')
+
+    # Cairo
+    path('admin/', admin.site.urls),
+    path('users/', views.UserList.as_view()),
+    path('users/<int:pk>/', views.UserIndividual.as_view()),
+    path('users/<int:user_id>/cart/', views.UserShoppingCartList.as_view()),
+    path('users/<int:user_id>/atc/<int:book_id>/', views.UserAddBookToCart.as_view()),
+    path('users/<int:user_id>/remove/<int:book_id>/', views.UserRemoveBookFromCart.as_view()),
+    path('users/<int:user_id>/cart/total/', views.UserShoppingCartTotal.as_view()),
+    path('books/', views.BookList.as_view()),
+    path('books/<int:pk>/', views.BookIndividual.as_view()),
+    # Cairo
+>>>>>>> Stashed changes
 ]
