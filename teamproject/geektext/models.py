@@ -2,6 +2,17 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.contrib.auth.models import AbstractUser
+from django.core.db.models import Q
+
+class BookManager(models.Manager):
+    def search(self, query):
+        return self.filter(
+            Q(name__icontains=query) | 
+            Q(description__icontains=query) |
+            Q(author__first_name__icontains=query) |
+            Q(author__last_name__icontains=query) |
+            Q(genre__icontains=query) |
+            Q(publisher__icontains=query)
 
 
 
