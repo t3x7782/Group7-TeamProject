@@ -2,9 +2,10 @@ from django.shortcuts import render
 from rest_framework import generics, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import Book, Author, Comments, Rating
-from .serializers import BookSerializer, AuthorSerializer, CommentSerializer, RatingSerializer
+from .models import Book, Author, Comments, Rating, User, CreditCard
+from .serializers import BookSerializer, AuthorSerializer, CommentSerializer, RatingSerializer, UserSerializer, CreditCardSerializer
 from django.http import JsonResponse
+from django.core.exceptions import ObjectDoesNotExist
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404, render
@@ -134,4 +135,85 @@ def book_rating_average(request, book_id):
         avg_rating = 'N/A'
     data = {'avg_rating': avg_rating}
     return JsonResponse(data)
+
+
+class UserList(generics.ListCreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
+class UserIndividual(generics.RetrieveUpdateDestroyAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
+class CreditCardList(generics.ListCreateAPIView):
+    queryset = CreditCard.objects.all()
+    serializer_class = CreditCardSerializer
+
+
+class CreditCardIndividual(generics.RetrieveUpdateDestroyAPIView):
+    queryset = CreditCard.objects.all()
+    serializer_class = CreditCardSerializer
+
+
+class CreateUserView(APIView):
+    def post(self, request):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'message': 'User created successfully'})
+        else:
+            print(serializer.errors)
+            return Response(serializer.errors, status=400)
+
+
+class GetUserView(APIView):
+    def get(self, request, username):
+        try:
+            user = User.objects.get(username=username)
+        except ObjectDoesNotExist:
+            return Response({'message': 'User not found'}, status=404)
+
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
+
+
+class UserUpdate(APIView):
+    def put(self, request, username):
+        try:
+            user = User.objects.get(username=username)
+        except ObjectDoesNotExist:
+            return Response({'message': 'User not found'}, status=404)
+
+        serializer = UserSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'message': 'User updated successfully'}, status=200)
+        else:
+            return Response(serializer.errors, status=400)
+
+
+class CreditCardCreate(APIView):
+    @csrf_exempt
+    def dispatch(self, *args, **kwargs):
+        return super(CreditCardCreate, self).dispatch(*args, **kwargs)
+
+    def post(self, request):
+        username = request.data.get('username', None)
+        if not username:
+            return Response({'message': 'Username not provided'}, status=400)
+
+        try:
+            user = User.objects.get(username=username)
+        except ObjectDoesNotExist:
+            return Response({'message': 'User not found'}, status=404)
+
+        serializer = CreditCardSerializer(data=request.data['credit_card'])
+        if serializer.is_valid():
+            credit_card = serializer.save()
+            user.credit_cards.add(credit_card)
+            return Response({'message': 'Credit card created and linked to user successfully'}, status=201)
+        else:
+            return Response(serializer.errors, status=400)
 
